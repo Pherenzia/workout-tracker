@@ -112,8 +112,9 @@ async function handleFormSubmit(event) {
     workoutData.reps = Number(repsInput.value.trim());
     workoutData.duration = Number(resistanceDurationInput.value.trim());
   }
-
+  
   await API.addExercise(workoutData);
+  console.log(workoutData)
   clearInputs();
   toast.classList.add('success');
 }

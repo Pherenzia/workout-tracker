@@ -1,6 +1,6 @@
 const express = require("express");
-const mongoose = require("mongoose");
 const path = require("path");
+const mongoose = require("mongoose");
 const workoutRoutes = require("./routes/apiRoutes");
 const PORT = process.env.PORT || 3000;
 const app = express();
@@ -28,7 +28,6 @@ app.get('/exercise', (req, res) => {
     res.sendFile(path.resolve(__dirname, './public/exercise.html'));
 });
 
-
 app.listen(PORT, () => {
-  console.log(`App running on port ${PORT}!`);
+  console.log(`App listening on port ${PORT}!`);
 });

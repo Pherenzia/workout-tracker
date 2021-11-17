@@ -1,5 +1,6 @@
 const router = require("express").Router();
 const Workout = require("../models/workoutModel.js");
+const path = require("path");
 
 router.get("/", async (req, res) => {
   try {
@@ -10,7 +11,7 @@ router.get("/", async (req, res) => {
         },
       },
     ]);
-    console.log(JSON.stringify(aggregatedWorkout, null));
+    // console.log(JSON.stringify(aggregatedWorkout, null));
     res.json(aggregatedWorkout);
   } catch (error) {
     console.log(error);
@@ -33,26 +34,25 @@ router.get("/range", async (req, res) => {
   }
 });
 
-router.post("/", async ({ body }, res) => {
-  await Workout.create(body)
-    .then((workout) => {
-      res.json(workout);
-    })
-    .catch((err) => {
-      res.status(400).json(err);
-    });
+router.post("/", async (req, res) => {
+  const workout = await Workout.create(req.body);
+  res.json(workout);
 });
 
 router.put("/:id", async (req, res) => {
+  console.log("You hit /api/workouts/:id")
+  console.log("req.body", req.body)
   try {
     const workout = await Workout.updateOne(
       { _id: req.params.id },
       { $push: { exercises: req.body } }
     );
-
+    console.log(workout)
     res.json(workout);
   } catch (error) {
-    res.status(400).json(err);
+    console.log("something went wrong")
+    console.log(error)
+    res.status(400).json(error);
   }
 });
 
