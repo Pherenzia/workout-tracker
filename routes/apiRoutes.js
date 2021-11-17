@@ -3,7 +3,7 @@ const Workout = require("../models/workoutModel.js");
 
 router.get("/", async (req, res) => {
   try {
-    const aggregatedWorkout = await db.Workout.aggregate([
+    const aggregatedWorkout = await Workout.aggregate([
       {
         $addFields: {
           weeklyDuration: { $sum: "$excercise.duration" },
@@ -11,18 +11,28 @@ router.get("/", async (req, res) => {
         },
       },
     ]);
-    console.log(JSON.stringify(aggregatedWorkout, null, 7));
+    console.log(JSON.stringify(aggregatedWorkout, null));
     res.json(aggregatedWorkout);
   } catch (error) {
     console.log(error);
-  } finally {
-    process.exit();
-  }
+  } 
 });
 
 router.get("/range", async (req, res) => {
-  const workout = await Workout.find();
-  res.json(workout);
+  try {
+    const aggregatedWorkout = await Workout.aggregate([
+      {
+        $addFields: {
+          weeklyDuration: { $sum: "$excercise.duration" },
+          weeklyWeight: { $sum: "$excercise.weight" },
+        },
+      },
+    ]);
+    console.log(JSON.stringify(aggregatedWorkout, null));
+    res.json(aggregatedWorkout);
+  } catch (error) {
+    console.log(error);
+  } 
 });
 
 router.post("/", async (req, res) => {
