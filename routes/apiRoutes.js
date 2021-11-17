@@ -6,8 +6,7 @@ router.get("/", async (req, res) => {
     const aggregatedWorkout = await Workout.aggregate([
       {
         $addFields: {
-          weeklyDuration: { $sum: "$excercise.duration" },
-          weeklyWeight: { $sum: "$excercise.weight" },
+          totalDuration: { $sum: "$excercises.duration" },
         },
       },
     ]);
@@ -15,7 +14,7 @@ router.get("/", async (req, res) => {
     res.json(aggregatedWorkout);
   } catch (error) {
     console.log(error);
-  } 
+  }
 });
 
 router.get("/range", async (req, res) => {
@@ -23,8 +22,7 @@ router.get("/range", async (req, res) => {
     const aggregatedWorkout = await Workout.aggregate([
       {
         $addFields: {
-          weeklyDuration: { $sum: "$excercise.duration" },
-          weeklyWeight: { $sum: "$excercise.weight" },
+          totalDuration: { $sum: "$excercises.duration" },
         },
       },
     ]);
@@ -32,18 +30,23 @@ router.get("/range", async (req, res) => {
     res.json(aggregatedWorkout);
   } catch (error) {
     console.log(error);
-  } 
+  }
 });
 
-router.post("/", async (req, res) => {
-  const workout = await Workout.create(req.body);
-  res.json(workout);
+router.post("/", async ({ body }, res) => {
+  await Workout.create(body)
+    .then((workout) => {
+      res.json(workout);
+    })
+    .catch((err) => {
+      res.status(400).json(err);
+    });
 });
 
 router.put("/:id", async (req, res) => {
   try {
     const workout = await Workout.updateOne(
-      { id: req.params.id },
+      { _id: req.params.id },
       { $push: { exercises: req.body } }
     );
 
